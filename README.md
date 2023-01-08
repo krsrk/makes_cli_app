@@ -16,14 +16,17 @@ Deploy on Local
 8. After migrate the database schema: docker exec app ./minicli migrate seed
 
 Login to the app:
-- docker exec app ./minicli login user=adm password=P@ssw0rd
+- docker compose exec app ./minicli login user=adm password=P@ssw0rd
 
 Query the report seeded:
-- docker exec app ./minicli report
+- docker compose exec app ./minicli report
 
 Send the excel report by mail(must configure the .env MAIL vars first):
-- docker exec app ./minicli report send email=some@email.com
+- docker compose exec app ./minicli report send email=some@email.com
 
 Save the excel report to an S3 instance(must configure the .env AWS vars first):
-- docker exec app ./minicli report save
+- docker compose exec app ./minicli report save
+
+Query the sys logs:
+- docker compose exec app ./minicli logs
 
