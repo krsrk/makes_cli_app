@@ -9,8 +9,7 @@
       "App\\": "app/"
     },
     "files": [
-      "app/Utils/helpers.php",
-      "app/config/db.php"
+      "app/Utils/helpers.php"
     ]
   },
   "require": {
