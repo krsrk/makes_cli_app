@@ -19,10 +19,13 @@ class UserRepository
             ];
         }
 
-        $newSession = new Sessions();
-        $newSession->user_id = $loggedUser->id;
+        $newSession = Sessions::firstOrCreate(['user_id' => $loggedUser->id], [
+            'user_id' => $loggedUser->id,
+            'active' => true,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
         $newSession->active = true;
-        $newSession->created_at = date('Y-m-d H:i:s');
         $newSession->save();
 
         return [
@@ -38,4 +41,17 @@ class UserRepository
         $session->save();
     }
 
+    public function isUserLoggedIn() : bool
+    {
+        $result = true;
+        $session = Sessions::query()->first();
+
+        if (is_null($session)) {
+            $result = false;
+        } else {
+            $result = $session->active;
+        }
+
+        return $result;
+    }
 }

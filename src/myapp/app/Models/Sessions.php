@@ -12,4 +12,9 @@ class Sessions extends Model
 {
     protected $table = 'sessions';
     public $timestamps = true;
+
+    protected $fillable = [
+        'user_id',
+        'active',
+    ];
 }

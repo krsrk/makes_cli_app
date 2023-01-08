@@ -3,6 +3,7 @@
 namespace App\Command\Report;
 
 use App\Repositories\MakeRepository;
+use App\Repositories\UserRepository;
 use App\Utils\Excel\ExcelFile;
 use App\Utils\Mail\Mailer;
 use Minicli\Command\CommandController;
@@ -12,6 +13,11 @@ class SendController extends CommandController
 
     public function handle(): void
     {
+        if (! (new UserRepository)->isUserLoggedIn()) {
+            $this->getPrinter()->display('You must logged in');
+            return;
+        }
+
         $email = $this->getParam('email');
         $report = (new MakeRepository)->getReport();
         $reportData = [

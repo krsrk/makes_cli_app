@@ -2,7 +2,9 @@
 
 namespace App\Command\Report;
 
+use App\Middleware\CheckUserSession;
 use App\Repositories\MakeRepository;
+use App\Repositories\UserRepository;
 use Minicli\Command\CommandController;
 use Minicli\Output\Filter\ColorOutputFilter;
 use Minicli\Output\Helper\TableHelper;
@@ -12,6 +14,11 @@ class DefaultController extends CommandController
 
     public function handle(): void
     {
+        if (! (new UserRepository)->isUserLoggedIn()) {
+            $this->getPrinter()->display('You must logged in');
+            return;
+        }
+
         $report = (new MakeRepository)->getReport();
         $this->getPrinter()->display('Makes Report');
 
