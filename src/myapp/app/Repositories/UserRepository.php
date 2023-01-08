@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Sessions;
+use App\Models\SysLog;
 use App\Models\User;
 
 class UserRepository
@@ -28,6 +29,8 @@ class UserRepository
         $newSession->active = true;
         $newSession->save();
 
+        (new SysLogRepository)->create($loggedUser->id, 'User logged in');
+
         return [
             'session_id' => $newSession->id,
             'is_logged_in' => true,
@@ -39,6 +42,7 @@ class UserRepository
         $session = Sessions::query()->first();
         $session->active = false;
         $session->save();
+        (new SysLogRepository)->create($session->user_id, 'User logout in');
     }
 
     public function isUserLoggedIn() : bool

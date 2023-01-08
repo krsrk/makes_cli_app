@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Command\Report;
+namespace App\Command\Logs;
 
-use App\Repositories\MakeRepository;
 use App\Repositories\SysLogRepository;
 use App\Repositories\UserRepository;
 use Minicli\Command\CommandController;
@@ -19,20 +18,20 @@ class DefaultController extends CommandController
             return;
         }
 
-        $report = (new MakeRepository)->getReport();
-        $this->getPrinter()->display('Makes Report');
+        $sysLogs = (new SysLogRepository)->all();
+        $this->getPrinter()->display('Log Events');
 
         $table = new TableHelper();
-        $table->addHeader(['Make', 'Model', 'Model Year', 'Vehicle Type']);
+        $table->addHeader(['User', 'Description', 'Date']);
 
-        foreach ($report as $re) {
-            $table->addRow([$re->make, $re->model, $re->model_year, $re->vehicle_type]);
+        foreach ($sysLogs as $sys) {
+            $table->addRow(["$sys->user_id", $sys->log_description, "$sys->created_at"]);
         }
 
         $this->getPrinter()->newline();
         $this->getPrinter()->rawOutput($table->getFormattedTable(new ColorOutputFilter()));
         $this->getPrinter()->newline();
 
-        (new SysLogRepository)->create(1, 'User queries the report');
+        (new SysLogRepository)->create(1, 'User queries the logs');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Command\Report;
 
+use App\Repositories\SysLogRepository;
 use App\Repositories\UserRepository;
 use App\Utils\Files\FileManager;
 use Minicli\Command\CommandController;
@@ -21,6 +22,8 @@ class SaveController extends CommandController
         if (! empty($saveFile)) {
             $this->getPrinter()->info('File Report upload succesfully!');
         }
+
+        (new SysLogRepository)->create(1, 'User saves the report');
 
     }
 }
