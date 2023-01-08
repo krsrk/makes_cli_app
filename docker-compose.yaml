@@ -1,0 +1,40 @@
+version: '3.7'
+services:
+  db:
+    image: library/mysql:5.7
+    container_name: my_cli_db
+    restart: unless-stopped
+    #command:
+    #  - --disable-partition-engine-check
+    ports:
+      - 3316:3306
+    environment:
+      - "MYSQL_DATABASE=makes"
+      - "MYSQL_ROOT_PASSWORD=P@ssw0rd"
+      - "MYSQL_PASSWORD=P@ssw0rd"
+      - "MYSQL_USER=adm"
+      - "SERVICE_TAGS=dev"
+      - "SERVICE_NAME=mysql"
+    volumes:
+      - ./volumes/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - my_cli_app_network
+
+  app:
+    build:
+      args:
+        user: krs
+        uid: 1000
+      context: .
+      dockerfile: ./Dockerfile
+    image: my_cli_app
+    container_name: my_cli_app
+    restart: unless-stopped
+    volumes:
+      - ./src/myapp:/var/app
+    networks:
+      - my_cli_app_network
+
+networks:
+  my_cli_app_network:
+    driver: bridge
