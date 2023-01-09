@@ -8,13 +8,8 @@ use App\Utils\Configuration\DbConfig;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Sessions extends Model
+class SysLog extends Model
 {
-    protected $table = 'sessions';
+    protected $table = 'sys_logs';
     public $timestamps = true;
-
-    protected $fillable = [
-        'user_id',
-        'active',
-    ];
 }

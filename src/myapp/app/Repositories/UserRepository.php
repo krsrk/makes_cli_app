@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Sessions;
+use App\Models\SysLog;
 use App\Models\User;
 
 class UserRepository
@@ -19,11 +20,16 @@ class UserRepository
             ];
         }
 
-        $newSession = new Sessions();
-        $newSession->user_id = $loggedUser->id;
+        $newSession = Sessions::firstOrCreate(['user_id' => $loggedUser->id], [
+            'user_id' => $loggedUser->id,
+            'active' => true,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
         $newSession->active = true;
-        $newSession->created_at = date('Y-m-d H:i:s');
         $newSession->save();
+
+        (new SysLogRepository)->create($loggedUser->id, 'User logged in');
 
         return [
             'session_id' => $newSession->id,
@@ -36,6 +42,20 @@ class UserRepository
         $session = Sessions::query()->first();
         $session->active = false;
         $session->save();
+        (new SysLogRepository)->create($session->user_id, 'User logout in');
     }
 
+    public function isUserLoggedIn() : bool
+    {
+        $result = true;
+        $session = Sessions::query()->first();
+
+        if (is_null($session)) {
+            $result = false;
+        } else {
+            $result = $session->active;
+        }
+
+        return $result;
+    }
 }
